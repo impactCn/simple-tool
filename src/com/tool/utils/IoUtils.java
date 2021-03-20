@@ -10,9 +10,9 @@ import java.util.List;
  * @author: impactCn
  * @createTime: 2020-12-24
  */
-public class IOUtils {
+public class IoUtils {
 
-    private static ClassLoader classLoader = IOUtils.class.getClassLoader();
+    private static ClassLoader classLoader = IoUtils.class.getClassLoader();
 
     private static final char SLASH = '/';
 

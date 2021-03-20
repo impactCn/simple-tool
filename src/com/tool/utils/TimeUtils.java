@@ -15,6 +15,8 @@ public class TimeUtils {
 
     private static DateTimeFormatter formatter;
 
+
+
     public static Date localDateToDate(LocalDate localDate) {
 
         return Date.from(localDate.atStartOfDay(zoneId).toInstant());
