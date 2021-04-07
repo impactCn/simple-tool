@@ -19,14 +19,46 @@ import java.util.*;
  */
 public class BeanUtils {
 
-    public static <T>List<T> copyList(T target, List<T> list) {
+    /**
+     * 列表拷贝
+     * @param targetClass 目标对象的 class
+     * @param sources 来源对象列表
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> copyList(Class<T> targetClass, List<T> sources) {
+        return copyList(targetClass, sources, null);
+    }
+    /**
+     * 列表拷贝
+     * @param targetClass 目标对象的 class
+     * @param sources 来源对象列表
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> copyList(Class<T> targetClass, List<T> sources, String... ignoreProperties) {
+        List<T> targets = new ArrayList<>(sources.size());
+        for (T source : sources) {
+            try {
+                T target = targetClass.getDeclaredConstructor().newInstance();
+                copyProperties(source, target, ignoreProperties);
+                targets.add(target);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
 
-       return null;
+        }
+
+       return targets;
     }
 
-
+    /**
+     * 对象拷贝
+     * @param source 来源对象
+     * @param target 目标对象
+     */
     @Test
-    public static void copyProperties(Object source, Object target) {
+    public static <T> void copyProperties(T source, T target) {
         copyProperties(source, target, null);
     }
 
@@ -37,16 +69,15 @@ public class BeanUtils {
      * @param ignoreProperties 忽略属性
      */
     @Test
-    public static void copyProperties(Object source, Object target, String... ignoreProperties) {
+    public static <T> void copyProperties(T source, T target, String... ignoreProperties) {
 
-        Map<String, Object> sourceMap = toMap(source);
+        Map<String, T> sourceMap = toMap(source);
         List<String> ignorePropertiesList = new ArrayList<>();
         if (null != ignoreProperties) {
             ignorePropertiesList = Arrays.asList(ignoreProperties);
         }
         Class<?> editor = target.getClass();
         for (Field field : editor.getDeclaredFields()) {
-
 
             if (sourceMap.containsKey(field.getName())
                     && !ignorePropertiesList.contains(field.getName())) {
@@ -65,14 +96,14 @@ public class BeanUtils {
 
     /**
      * 对象转 map
-     * @param object 转化对象
+     * @param t 转化对象
      * @return 返回
      */
     @Test
-    public static Map<String, Object> toMap(Object object) {
-        Map<String, Object> editor = new HashMap<>();
+    public static <T> Map<String, T> toMap(T t) {
+        Map<String, T> editor = new HashMap<>();
         try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(object.getClass());
+            BeanInfo beanInfo = Introspector.getBeanInfo(t.getClass());
 
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor property : propertyDescriptors) {
@@ -81,13 +112,10 @@ public class BeanUtils {
 
                 Method getter = property.getReadMethod();
 
-                Object val = getter != null ? getter.invoke(object): null;
+                T val = getter != null ? (T) getter.invoke(t) : null;
 
                 editor.put(propertyName, val);
-
             }
-
-
         } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
