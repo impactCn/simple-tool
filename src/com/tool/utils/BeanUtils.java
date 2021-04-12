@@ -26,7 +26,7 @@ public class BeanUtils {
      * @param <T>
      * @return
      */
-    public static <T> List<T> copyList(Class<T> targetClass, List<T> sources) {
+    public static <T> List<T> copyList(final Class<T> targetClass, List<T> sources) {
         return copyList(targetClass, sources, null);
     }
     /**
@@ -36,7 +36,7 @@ public class BeanUtils {
      * @param <T>
      * @return
      */
-    public static <T> List<T> copyList(Class<T> targetClass, List<T> sources, String... ignoreProperties) {
+    public static <T> List<T> copyList(final Class<T> targetClass, List<T> sources, String... ignoreProperties) {
         List<T> targets = new ArrayList<>(sources.size());
         for (T source : sources) {
             try {
@@ -58,7 +58,7 @@ public class BeanUtils {
      * @param target 目标对象
      */
     @Test
-    public static <T> void copyProperties(T source, T target) {
+    public static <T> void copyProperties(final T source, T target) {
         copyProperties(source, target, null);
     }
 
@@ -69,7 +69,7 @@ public class BeanUtils {
      * @param ignoreProperties 忽略属性
      */
     @Test
-    public static <T> void copyProperties(T source, T target, String... ignoreProperties) {
+    public static <T> void copyProperties(final T source, T target, String... ignoreProperties) {
 
         Map<String, T> sourceMap = toMap(source);
         List<String> ignorePropertiesList = new ArrayList<>();

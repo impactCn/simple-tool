@@ -2,6 +2,8 @@ package com.tool.utils;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,8 +80,35 @@ public class NioUtils {
 
 
 
-    public static OutputStream read(String url) {
-        return null;
+    public static String read(String path) {
+
+        File file = new File(path);
+        StringBuilder contentBuilder = new StringBuilder();
+        try {
+            if (file.exists()) {
+                FileInputStream fis = new FileInputStream(file);
+                FileChannel channel = fis.getChannel();
+                ByteBuffer buffer = ByteBuffer.allocate(1024);
+
+                int length;
+
+                while ((length = channel.read(buffer)) != -1) {
+                    buffer.clear();
+                    byte[] bytes = buffer.array();
+                    contentBuilder.append(new String(bytes, 0, length));
+
+                }
+                fis.close();
+                channel.close();
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return contentBuilder.toString();
     }
 
     public static OutputStream read(InputStream inputStream) {
